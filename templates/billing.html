@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smart Billing</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    display: flex;
+    background: #f5f7fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+    color: #2c3e50;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    min-height: 100vh;
+    padding: 30px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.profile {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.profile img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 15px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.profile img:hover {
+    transform: scale(1.05);
+}
+
+.profile h3 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    margin: 8px 0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.menu a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    letter-spacing: -0.5px;
+}
+
+.back-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.back-btn:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* CONTROLS */
+.controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+select, input[type="number"] {
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #f9f9f9;
+    color: #2c3e50;
+}
+
+select:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+select {
+    flex: 1;
+    cursor: pointer;
+}
+
+input[type="number"] {
+    width: 120px;
+}
+
+/* BUTTON */
+.btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-generate {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-generate:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-print {
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.btn-print:hover {
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-pdf {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.btn-pdf:hover {
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+th {
+    padding: 16px;
+    text-align: left;
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+tbody tr {
+    transition: all 0.3s ease;
+}
+
+tbody tr:hover {
+    background: #f5f7fa;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* DELETE */
+.delete-btn {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(250, 112, 154, 0.3);
+}
+
+.delete-btn:hover {
+    background: linear-gradient(135deg, #fee140 0%, #fa709a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(250, 112, 154, 0.4);
+}
+
+/* SUMMARY */
+.summary {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    padding: 25px;
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+    margin-bottom: 30px;
+}
+
+.summary div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.summary div:last-of-type {
+    margin-bottom: 0;
+}
+
+.summary input[type="number"] {
+    width: 120px;
+    padding: 8px 12px;
+    border: 2px solid #667eea;
+    background: white;
+}
+
+.total {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: right;
+    margin-top: 15px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* ACTION BUTTONS */
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+@media (max-width: 1024px) {
+    .main {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        padding: 20px;
+    }
+
+    .main {
+        padding: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .header h2 {
+        font-size: 24px;
+    }
+
+    .controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    select, input[type="number"] {
+        width: 100%;
+    }
+
+    input[type="number"] {
+        width: 100%;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons .btn {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="profile">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+        <h3>Smart Shopkeeper</h3>
+    </div>
+
+    <div class="menu">
+        <a href="/dashboard">🏠 Dashboard</a>
+        <a href="/add_product">➕ Add Product</a>
+        <a href="/view_products">📦 View Products</a>
+        <a href="/billing">💳 Billing</a>
+        <a href="/bill_history">🧾 Bill History</a>
+        <a href="/stock_report">📊 Stock Report</a>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">
+    <h2>💳 Smart Billing</h2>
+    <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
+</div>
+
+<div class="card">
+
+<!-- INPUT -->
+<div class="controls">
+    <select id="product"></select>
+    <input type="number" id="qty" placeholder="Enter Quantity">
+    <button class="btn" onclick="addItem()">➕ Add Item</button>
+</div>
+
+<!-- TABLE -->
+<table>
+<thead>
+<tr>
+<th>Product</th>
+<th>Price</th>
+<th>Qty</th>
+<th>Total</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="bill"></tbody>
+</table>
+
+<!-- SUMMARY -->
+<div class="summary">
+    <div>
+        <span>Subtotal:</span>
+        <span>₹ <span id="subtotal">0</span></span>
+    </div>
+    <div>
+        <span>GST (18%):</span>
+        <span>₹ <span id="gst">0</span></span>
+    </div>
+    <div>
+        <span>Discount (%):</span>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="number" id="discount" value="0" min="0" max="100" style="flex: 1;" oninput="calculateTotal()">
+            <span style="font-weight: 600; color: #667eea;">%</span>
+            <span style="font-size: 12px; color: #999;">= ₹<span id="discountAmount">0</span></span>
+        </div>
+    </div>
+    <div class="total">Final Total: ₹ <span id="final">0</span></div>
+</div>
+
+<!-- ACTION BUTTONS -->
+<div class="action-buttons">
+    <button class="btn btn-generate" onclick="generateBill()">✅ Generate Bill</button>
+    <button class="btn btn-print" onclick="printBill()">🖨️ Print</button>
+    <button class="btn btn-pdf" onclick="downloadPDF()">📥 Download PDF</button>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* LOAD PRODUCTS FROM STORAGE */
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+let select = document.getElementById("product");
+
+products.forEach(p => {
+    let opt = document.createElement("option");
+    opt.value = p.name;
+    opt.text = p.name + " (₹" + p.price + ")";
+    select.add(opt);
+});
+
+let billItems = [];
+
+/* ADD ITEM */
+function addItem() {
+    let name = select.value;
+    let qty = document.getElementById("qty").value;
+
+    let product = products.find(p => p.name === name);
+
+    if (!product || qty <= 0) {
+        alert("Invalid input");
+        return;
+    }
+
+    if (product.qty < qty) {
+        alert("Not enough stock!");
+        return;
+    }
+
+    product.qty -= qty; // 🔥 reduce stock
+
+    billItems.push({
+        name,
+        price: product.price,
+        qty: qty
+    });
+
+    localStorage.setItem("products", JSON.stringify(products));
+
+    renderBill();
+}
+
+/* RENDER */
+function renderBill() {
+    let table = document.getElementById("bill");
+    table.innerHTML = "";
+
+    let subtotal = 0;
+
+    billItems.forEach((item, index) => {
+        let total = item.price * item.qty;
+        subtotal += total;
+
+        table.innerHTML += `
+        <tr>
+            <td>${item.name}</td>
+            <td>₹${item.price}</td>
+            <td>${item.qty}</td>
+            <td>₹${total}</td>
+            <td><button class="delete-btn" onclick="removeItem(${index})">X</button></td>
+        </tr>`;
+    });
+
+    document.getElementById("subtotal").innerText = subtotal;
+
+    calculateTotal();
+}
+
+/* DELETE */
+function removeItem(index) {
+    billItems.splice(index, 1);
+    renderBill();
+}
+
+/* TOTAL */
+function calculateTotal() {
+    let subtotal = Number(document.getElementById("subtotal").innerText);
+    let gst = subtotal * 0.18;
+    let discountPercent = Number(document.getElementById("discount").value || 0);
+    let discountAmount = (subtotal * discountPercent) / 100;
+
+    let final = subtotal + gst - discountAmount;
+
+    document.getElementById("gst").innerText = gst.toFixed(2);
+    document.getElementById("discountAmount").innerText = discountAmount.toFixed(2);
+    document.getElementById("final").innerText = final.toFixed(2);
+}
+
+/* GENERATE BILL - SAVE TO HISTORY AND DATABASE */
+function generateBill() {
+    if (billItems.length === 0) {
+        alert("❌ No items in bill");
+        return;
+    }
+
+    let subtotal = Number(document.getElementById("subtotal").innerText);
+    let gst = Number(document.getElementById("gst").innerText);
+    let discountPercent = Number(document.getElementById("discount").value || 0);
+    let discountAmount = (subtotal * discountPercent) / 100;
+    let final = Number(document.getElementById("final").innerText);
+    let customerName = document.getElementById("customerName")?.value || "Walk-in Customer";
+    let customerPhone = document.getElementById("customerPhone")?.value || "";
+
+    // Get bill history
+    let billHistory = JSON.parse(localStorage.getItem("billHistory")) || [];
+    
+    // Create bill object
+    let bill = {
+        id: billHistory.length + 1,
+        date: new Date().toLocaleString(),
+        items: JSON.parse(JSON.stringify(billItems)),
+        subtotal: subtotal,
+        gst: gst,
+        discount: discountAmount,
+        total: final
+    };
+
+    // Save to database via API
+    fetch('/generate_bill', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            items: billItems,
+            subtotal: subtotal,
+            gst: gst,
+            discount: discountAmount,
+            final_total: final,
+            customer_name: customerName,
+            customer_phone: customerPhone
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Save to localStorage as well
+            billHistory.push(bill);
+            localStorage.setItem("billHistory", JSON.stringify(billHistory));
+            
+            alert(`✅ Bill #${data.billNumber} saved successfully!\nTotal: ₹${final.toFixed(2)}`);
+            
+            // Clear the bill
+            clearBill();
+        } else {
+            alert("❌ Error saving bill: " + (data.error || "Unknown error"));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("❌ Error saving bill to database. Check console for details.");
+    });
+}
+
+/* CLEAR BILL */
+function clearBill() {
+    billItems = [];
+    document.getElementById("discount").value = 0;
+    renderBill();
+}
+
+/* PRINT */
+function printBill() {
+    if (billItems.length === 0) {
+        alert("❌ No items to print");
+        return;
+    }
+    window.print();
+}
+
+/* DOWNLOAD PDF */
+function downloadPDF() {
+    if (billItems.length === 0) {
+        alert("❌ No items to download");
+        return;
+    }
+
+    let subtotal = Number(document.getElementById("subtotal").innerText);
+    let gst = Number(document.getElementById("gst").innerText);
+    let discount = Number(document.getElementById("discount").value || 0);
+    let final = Number(document.getElementById("final").innerText);
+    let billNo = JSON.parse(localStorage.getItem("billHistory"))?.length + 1 || 1;
+
+    // Create bill content
+    let billContent = `\n═══════════════════════════════════════\n        SMART SHOPKEEPER BILL\n                                       \nBill No: ${billNo}\nDate: ${new Date().toLocaleDateString()}\nTime: ${new Date().toLocaleTimeString()}\n═══════════════════════════════════════\n\nPRODUCT DETAILS:\n───────────────────────────────────────\n`;
+
+    billItems.forEach((item, i) => {
+        let total = (item.price * item.qty).toFixed(2);
+        billContent += `${i+1}. ${item.name}\n   Price: ₹${item.price} × ${item.qty} = ₹${total}\n\n`;
+    });
+
+    billContent += `───────────────────────────────────────\nSubtotal:        ₹${subtotal.toFixed(2)}\nGST (18%):       ₹${gst.toFixed(2)}\nDiscount:        -₹${discount.toFixed(2)}\n───────────────────────────────────────\nFINAL TOTAL:     ₹${final.toFixed(2)}\n───────────────────────────────────────\n\nThank you for your purchase!\n`;
+
+    // Create and download file
+    let element = document.createElement("a");
+    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(billContent));
+    element.setAttribute("download", `Bill_${billNo}_${new Date().getTime()}.txt`);
+    element.style.display = "none";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+
+    alert("✅ Bill downloaded successfully!");
+}
+
+</script>
+
+</body>
+</html>

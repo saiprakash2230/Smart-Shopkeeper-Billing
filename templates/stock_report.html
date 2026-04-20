@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Advanced Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    display: flex;
+    background: #f5f7fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+    color: #2c3e50;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    min-height: 100vh;
+    padding: 30px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.profile {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.profile img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 15px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.profile img:hover {
+    transform: scale(1.05);
+}
+
+.profile h3 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    margin: 8px 0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.menu a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    letter-spacing: -0.5px;
+}
+
+.back-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.back-btn:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.card-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border-top: 4px solid #667eea;
+    text-align: center;
+}
+
+.card-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-box h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.card-box p {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+/* CHARTS */
+.chart-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.chart-box {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.chart-box:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.chart-box h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+/* TABLE */
+.table-box {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.table-box:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+}
+
+thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+th {
+    padding: 16px;
+    text-align: left;
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+tbody tr {
+    transition: all 0.3s ease;
+}
+
+tbody tr:hover {
+    background: #f5f7fa;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.in {
+    color: #27ae60;
+    font-weight: 700;
+    background: rgba(39, 174, 96, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.low {
+    color: #e74c3c;
+    font-weight: 700;
+    background: rgba(231, 76, 60, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.low-row {
+    background: rgba(231, 76, 60, 0.05);
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .main {
+        padding: 25px;
+    }
+
+    .chart-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        padding: 20px;
+    }
+
+    .main {
+        padding: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .header h2 {
+        font-size: 24px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .chart-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="profile">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Admin Profile">
+        <h3>Smart Shopkeeper</h3>
+    </div>
+
+    <div class="menu">
+        <a href="/dashboard">🏠 Dashboard</a>
+        <a href="/add_product">➕ Add Product</a>
+        <a href="/view_products">📦 View Products</a>
+        <a href="/billing">💳 Billing</a>
+        <a href="/bill_history">🧾 Bill History</a>
+        <a href="/stock_report">📊 Stock Report</a>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">
+    <h2>📊 Stock Report</h2>
+    <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
+</div>
+
+<!-- SUMMARY -->
+<div class="cards">
+    <div class="card-box">
+        <h3>📦 Total Products</h3>
+        <p id="total">0</p>
+    </div>
+    <div class="card-box" style="border-top-color: #10b981;">
+        <h3>✅ In Stock</h3>
+        <p id="inStock" style="color: #10b981;">0</p>
+    </div>
+    <div class="card-box" style="border-top-color: #ef4444;">
+        <h3>⚠️ Low Stock</h3>
+        <p id="lowStock" style="color: #ef4444;">0</p>
+    </div>
+</div>
+
+<!-- CHARTS 1 -->
+<div class="chart-row">
+    <div class="chart-box">
+        <h4>📈 Stock Overview</h4>
+        <canvas id="barChart"></canvas>
+    </div>
+    <div class="chart-box">
+        <h4>🥧 Category Distribution</h4>
+        <canvas id="pieChart"></canvas>
+    </div>
+</div>
+
+<!-- CHARTS 2 -->
+<div class="chart-row">
+    <div class="chart-box">
+        <h4>💰 Sales Overview</h4>
+        <canvas id="salesChart"></canvas>
+    </div>
+    <div class="chart-box">
+        <h4>💵 Profit Analytics</h4>
+        <canvas id="profitChart"></canvas>
+    </div>
+</div>
+
+<!-- TABLE -->
+<div class="table-box">
+<table>
+<thead>
+<tr>
+<th>Product Name</th>
+<th>Category</th>
+<th>Quantity</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="data"></tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+
+/* FETCH PRODUCTS FROM DATABASE */
+let products = [];
+let sales = [];
+
+function fetchData() {
+    // Fetch products
+    fetch('/api/products')
+        .then(response => response.json())
+        .then(data => {
+            products = data;
+            loadReport();
+        })
+        .catch(error => {
+            console.error('Error fetching products:', error);
+            document.getElementById("data").innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">Failed to load products</td></tr>';
+        });
+    
+    // Fetch sales data
+    fetch('/api/sales-by-day')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.data) {
+                sales = data.data.map(s => ({
+                    day: s.date,
+                    amount: s.total_sales || 0
+                }));
+                loadSalesChart();
+                loadProfitChart();
+            }
+        })
+        .catch(error => console.error('Error fetching sales:', error));
+}
+
+/* REPORT */
+function loadReport() {
+
+    let table = document.getElementById("data");
+    table.innerHTML = "";
+
+    let inStock = 0;
+    let lowStock = 0;
+    let categoryMap = {};
+
+    if (products.length === 0) {
+        table.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: #666;">No products available</td></tr>';
+        return;
+    }
+
+    products.forEach(p => {
+
+        let isLow = p.quantity <= 5;
+
+        if (isLow) lowStock++;
+        else inStock++;
+
+        if (!categoryMap[p.category]) {
+            categoryMap[p.category] = 0;
+        }
+
+        categoryMap[p.category] += p.quantity;
+
+        table.innerHTML += `
+        <tr class="${isLow ? 'low-row' : ''}">
+            <td>${p.name}</td>
+            <td>${p.category}</td>
+            <td style="${isLow ? 'color:red;font-weight:bold' : ''}">${p.quantity}</td>
+            <td class="${isLow ? 'low' : 'in'}">
+                ${isLow ? 'Low Stock ⚠' : 'In Stock'}
+            </td>
+        </tr>`;
+    });
+
+    document.getElementById("total").innerText = products.length;
+    document.getElementById("inStock").innerText = inStock;
+    document.getElementById("lowStock").innerText = lowStock;
+
+    loadBarChart(inStock, lowStock);
+    loadPieChart(categoryMap);
+}
+
+/* BAR */
+function loadBarChart(inStock, lowStock) {
+    new Chart(document.getElementById("barChart"), {
+        type: 'bar',
+        data: {
+            labels: ['In Stock','Low Stock'],
+            datasets: [{
+                data: [inStock, lowStock],
+                backgroundColor: ['#22c55e','#ef4444']
+            }]
+        },
+        options:{plugins:{legend:{display:false}}}
+    });
+}
+
+/* PIE */
+function loadPieChart(map) {
+    new Chart(document.getElementById("pieChart"), {
+        type: 'pie',
+        data: {
+            labels: Object.keys(map),
+            datasets: [{
+                data: Object.values(map),
+                backgroundColor: ['#6366f1','#22c55e','#f59e0b','#ef4444','#06b6d4']
+            }]
+        }
+    });
+}
+
+/* SALES */
+function loadSalesChart() {
+    new Chart(document.getElementById("salesChart"), {
+        type: 'line',
+        data: {
+            labels: sales.map(s=>s.day),
+            datasets: [{
+                label:"Sales",
+                data:sales.map(s=>s.amount),
+                borderColor:'#22c55e',
+                fill: false,
+                tension: 0.4
+            }]
+        }
+    });
+}
+
+/* PROFIT */
+function loadProfitChart() {
+    new Chart(document.getElementById("profitChart"), {
+        type: 'bar',
+        data: {
+            labels: sales.map(s=>s.day),
+            datasets: [{
+                label:"Profit",
+                data:sales.map(s=>s.amount*0.2),
+                backgroundColor:'#6366f1'
+            }]
+        }
+    });
+}
+
+/* INIT - FETCH DATA FROM SERVER */
+fetchData();
+
+loadReport();
+
+</script>
+
+</body>
+</html>
